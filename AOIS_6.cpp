@@ -22,15 +22,16 @@ void Table_Note::print()
 }
 class Hash_table
 {
-private:
     vector<Table_Note*>table;
     static int max_letter_massive_code;
     static int ASCII_letters_shift;
     bool encode_checker(string &key_word);
     int hash_function(string& key_word);
     void clear();
+    
 public:
     Hash_table();
+    ~Hash_table();
     void push(string &key_word, string &data);
     void delete_with_key(string& key_word);
     void find_with_key(string& key_word);
@@ -90,13 +91,51 @@ void Hash_table::find_with_key(string& key_word)
         looking_for = looking_for->next;
     }
 }
+void Hash_table::output()
+{
+    for (int i = 0; i < table.size(); i++)
+    {
+        Table_Note* example = table[i];
+        while (example != NULL)
+        {
+            example->print();
+            example = example->next;
+        }
+    }
+}
+void Hash_table::clear()
+{
+    for (int i = 0; i < table.size(); i++)
+    {
+        Table_Note* deleting = table[i];
+        while (deleting != NULL)
+        {
+            table[i] = table[i]->next;
+            delete deleting;
+            deleting = table[i];
+        }
+    }
+}
+Hash_table::~Hash_table()
+{
+    clear();
+    table.clear();
+}
 int Hash_table::max_letter_massive_code = 25;
 int Hash_table::ASCII_letters_shift = 32;
 
-
 int main()
 {
-
+    Hash_table math;
+    string a = "Rectangle";
+    string a_opr = "ctvybumiop,";
+    string b = "rtnbdf";
+    string b_opr = "tv7ybuniomp,";
+    string c = "rtbuin";
+    math.push(a, a_opr);
+    math.push(b, b_opr);
+    math.delete_with_key(b);
+    math.output();
     return 0;
 }
 
