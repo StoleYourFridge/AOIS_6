@@ -1,29 +1,5 @@
-﻿#include <iostream>
-#include <vector>
-#include <map>
-#include <string>
+﻿#include "AOIS_6.h"
 
-using namespace std;
-
-bool checker(string number)
-{
-    for (int i = 0; i < number.size(); i++)
-    {
-        if (number[i] != '1' && number[i] != '2' && number[i] != '3' && number[i] != '4' && number[i] != '5' && number[i] != '6' && number[i] != '7' && number[i] != '8' && number[i] != '9')
-            return false;
-    }
-    return true;
-}
-class Table_Note
-{
-    int numeral_key_word;
-    int hash;
-    string key_word;
-    string data;
-    Table_Note* next;
-    void print();
-    friend class Hash_table;
-};
 void Table_Note::print()
 {
     cout << "----------------------------------" << endl;
@@ -32,24 +8,6 @@ void Table_Note::print()
     cout << "Key word : " << key_word << endl;
     cout << "Data : " << data << endl << "----------------------------------" << endl;
 }
-class Hash_table
-{
-    int table_size;
-    int current_notes_amount;
-    vector<Table_Note*>table;
-    bool encode_checker(string &key_word);
-    int numeral_key_word(string &key_word);
-    int hash_function(int numeral_key_word);
-    void clear();
-    
-public:
-    Hash_table(int table_size);
-    ~Hash_table();
-    void push(string &key_word, string &data);
-    void delete_with_key(string& key_word);
-    void find_with_key(string& key_word);
-    void output();
-};
 Hash_table::Hash_table(int table_size) : table(table_size, NULL), table_size(table_size), current_notes_amount(0) {}
 bool Hash_table::encode_checker(string& key_word)
 {
@@ -264,10 +222,12 @@ void task()
         }
     }
 }
-
-int main()
+bool checker(string number)
 {
-    task();
-    return 0;
+    for (int i = 0; i < number.size(); i++)
+    {
+        if (number[i] != '1' && number[i] != '2' && number[i] != '3' && number[i] != '4' && number[i] != '5' && number[i] != '6' && number[i] != '7' && number[i] != '8' && number[i] != '9')
+            return false;
+    }
+    return true;
 }
-
