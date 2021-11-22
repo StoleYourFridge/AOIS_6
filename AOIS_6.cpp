@@ -6,6 +6,7 @@ using namespace std;
 
 class Table_Note
 {
+    int numeral_key_word;
     int hash;
     string key_word;
     string data;
@@ -16,38 +17,45 @@ class Table_Note
 void Table_Note::print()
 {
     cout << "----------------------------------" << endl;
+    cout << "Numeral Key word : " << numeral_key_word << endl;
     cout << "Hash : " << hash << endl;
     cout << "Key word : " << key_word << endl;
     cout << "Data : " << data << endl << "----------------------------------" << endl;
 }
 class Hash_table
 {
+    int table_size;
     vector<Table_Note*>table;
-    static int max_letter_massive_code;
-    static int ASCII_letters_shift;
     bool encode_checker(string &key_word);
-    int hash_function(string& key_word);
+    int numeral_key_word(string &key_word);
+    int hash_function(int numeral_key_word);
     void clear();
     
 public:
-    Hash_table();
+    Hash_table(int table_size);
     ~Hash_table();
     void push(string &key_word, string &data);
     void delete_with_key(string& key_word);
     void find_with_key(string& key_word);
     void output();
 };
-Hash_table::Hash_table() : table(max_letter_massive_code + 1, NULL) {}
+Hash_table::Hash_table(int table_size) : table(table_size, NULL), table_size(table_size) {}
 bool Hash_table::encode_checker(string& key_word)
 {
-    if (key_word.size() == 0) return false;
-    int first_letter_code = (int)(key_word[0]), a_code = (int)('a'), A_code = (int)('A'), z_code = (int)('z'), Z_code = (int)('Z');
+    int min_key_word_size = 2;
+    if (key_word.size() < min_key_word_size) return false;
+    int first_letter_code = (int)(key_word[0]), second_letter_code = (int)(key_word[1]), a_code = (int)('a'), A_code = (int)('A'), z_code = (int)('z'), Z_code = (int)('Z');
     if (first_letter_code < A_code || (first_letter_code > Z_code && first_letter_code < a_code) || first_letter_code > z_code) return false;
+    if (second_letter_code < A_code || (second_letter_code > Z_code && second_letter_code < a_code) || second_letter_code > z_code) return false;
     return true;
 }
-int Hash_table::hash_function(string& key_word)
+int Hash_table::numeral_key_word(string& key_word)
 {
-    return (int)(key_word[0]) % ASCII_letters_shift - 1;
+    return (int)(key_word[0]) + 2 * (int)(key_word[1]);
+}
+int Hash_table::hash_function(int numeral_key_word)
+{
+    return numeral_key_word % table_size;
 }
 void Hash_table::push(string& key_word, string& data)
 {
@@ -55,13 +63,14 @@ void Hash_table::push(string& key_word, string& data)
     Table_Note* Note = new Table_Note;
     Note->key_word = key_word;
     Note->data = data;
-    Note->hash = hash_function(key_word);
+    Note->numeral_key_word = numeral_key_word(key_word);
+    Note->hash = hash_function(Note->numeral_key_word);
     Note->next = table[Note->hash];
     table[Note->hash] = Note;
 }
 void Hash_table::delete_with_key(string& key_word)
 {
-    int hash_we_try_to_delete = hash_function(key_word);
+    int hash_we_try_to_delete = hash_function(numeral_key_word(key_word));
     Table_Note* deleting = table[hash_we_try_to_delete], *previous = NULL;
     while (deleting != NULL)
     {
@@ -83,7 +92,7 @@ void Hash_table::delete_with_key(string& key_word)
 }
 void Hash_table::find_with_key(string& key_word)
 {
-    int hash_we_try_to_delete = hash_function(key_word);
+    int hash_we_try_to_delete = hash_function(numeral_key_word(key_word));
     Table_Note* looking_for = table[hash_we_try_to_delete];
     while (looking_for != NULL)
     {
@@ -121,19 +130,19 @@ Hash_table::~Hash_table()
     clear();
     table.clear();
 }
-int Hash_table::max_letter_massive_code = 25;
-int Hash_table::ASCII_letters_shift = 32;
 
 int main()
 {
-    Hash_table math;
+    Hash_table math(35);
     string a = "Rectangle";
     string a_opr = "ctvybumiop,";
-    string b = "rtnbdf";
+    string b = "btnbdf";
     string b_opr = "tv7ybuniomp,";
     string c = "rtbuin";
     math.push(a, a_opr);
     math.push(b, b_opr);
+    math.output();
+    cout << "------------------------------" << endl;
     math.delete_with_key(b);
     math.output();
     return 0;
