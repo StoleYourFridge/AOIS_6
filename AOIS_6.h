@@ -34,10 +34,21 @@ class Hash_table
 public:
     Hash_table(int table_size);
     ~Hash_table();
+    int Get_curr_amount();
     void push(string& key_word, string& data);
     void delete_with_key(string& key_word);
-    void find_with_key(string& key_word);
     void output();
+    Table_Note* find_with_key(string& key_word);  
 };
-void task();
 
+void task();
+bool Test1();
+bool Test2();
+bool Test3();
+bool Test4();
+bool Test5();
+bool Test6();
+bool Test7();
+bool Test8();
+void tests();
+void our_own_input();

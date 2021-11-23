@@ -10,6 +10,7 @@ void Table_Note::print()
         " | D : " << D <<
         " | U : " << U <<
         " | T : " << T <<
+        " | next : " << next <<
         endl << "Data : " << data << endl << "------------------------------------------------------------------------------------------------------------------" << endl;
 }
 Hash_table::Hash_table(int table_size) : table(table_size, NULL), table_size(table_size), current_notes_amount(0) {}
@@ -108,9 +109,9 @@ void Hash_table::delete_with_key(string& key_word)
         }
     }
 }
-void Hash_table::find_with_key(string& key_word)
+Table_Note* Hash_table::find_with_key(string& key_word)
 {
-    if (!encode_checker(key_word)) return;
+    if (!encode_checker(key_word)) return NULL;
     int hash_we_try_to_find = hash_function(numeral_key_word(key_word));
     Table_Note* looking_for = table[hash_we_try_to_find];
     while (looking_for != NULL)
@@ -118,6 +119,11 @@ void Hash_table::find_with_key(string& key_word)
         if (looking_for->key_word == key_word) looking_for->print();
         looking_for = looking_for->next;
     }
+    return looking_for;
+}
+int Hash_table::Get_curr_amount()
+{
+    return current_notes_amount;
 }
 void Hash_table::output()
 {
@@ -150,7 +156,6 @@ Hash_table::~Hash_table()
     clear();
     table.clear();
 }
-
 void task()
 {
     string table_size_string;
@@ -213,10 +218,13 @@ void task()
     while (true)
     {
         cout << "What do you want?  :: 1)enter something :: 2)delete something :: 3)output all the information :: 4)find something :: 5)finish" << endl;
-        int choice;
+        string choice;
+        if (!checker(choice)) {
+            continue;
+        }
         string example_one, example_two;
         cin >> choice;
-        switch (choice)
+        switch (stoi(choice))
         {
         case 1: cout << "Enter key word : ";
             cin >> example_one;
@@ -250,4 +258,209 @@ bool checker(string number)
             return false;
     }
     return true;
+}
+
+bool Test1()
+{
+    int min_table_size = 21, difference = 1, before_size;
+    Hash_table example(min_table_size);
+    string a = "Infinity";
+    string a_def = "Number of points on a continuous line or as the size of the endless sequence of counting numbers";
+    example.push(a, a_def);
+    a = "Inequality";
+    a_def = "Relation which makes a non-equal comparison between two numbers or other mathematical expressions";
+    example.push(a, a_def);
+    before_size = example.Get_curr_amount();
+    example.delete_with_key(a);
+    if (before_size - example.Get_curr_amount() == difference) {
+        cout << "Test1 correct!" << endl;
+        return true;
+    }
+    else {
+        cout << "Test1 incorrect!" << endl;
+        return false;
+    }
+}
+bool Test2()
+{
+    int min_table_size = 21, difference = 1, before_size;
+    Hash_table example(min_table_size);
+    string a, a_def, deleting;
+    a = "Division";
+    a_def = "Method of distributing a group of things into equal parts";
+    example.push(a, a_def);
+    a = "Diagonal";
+    a_def = "Straight line connecting the opposite corners of a polygon through its vertex";
+    example.push(a, a_def);
+    a = "Diameter";
+    a_def = "The distance from one point on a circle through the center to another point on the circle";
+    example.push(a, a_def);
+    before_size = example.Get_curr_amount();
+    deleting = "Division";
+    example.delete_with_key(deleting);
+    if (before_size - example.Get_curr_amount() == difference) {
+        cout << "Test2 correct!" << endl;
+        return true;
+    }
+    else {
+        cout << "Test2 incorrect!" << endl;
+        return false;
+    }
+}
+bool Test3()
+{
+    int min_table_size = 21, difference = 3, before_size;
+    Hash_table example(min_table_size);
+    string a, a_def, deleting;
+    a = "Oval";
+    a_def = "Figure constructed from two pairs of arcs, with two different radii";
+    example.push(a, a_def);
+    a = "Cube";
+    a_def = "Solid three-dimensional figure, which has 6 square faces, 8 vertices and 12 edges";
+    example.push(a, a_def);
+    a = "Pyramid";
+    a_def = "Polyhedron formed by connecting a polygonal base and a point, called the apex";
+    example.push(a, a_def);
+    before_size = example.Get_curr_amount();
+    deleting = "Oval";
+    example.delete_with_key(deleting);
+    deleting = "Cube";
+    example.delete_with_key(deleting);
+    deleting = "Pyramid";
+    example.delete_with_key(deleting);
+    if (before_size - example.Get_curr_amount() == difference) {
+        cout << "Test3 correct!" << endl;
+        return true;
+    }
+    else {
+        cout << "Test3 incorrect!" << endl;
+        return false;
+    }
+}
+bool Test4()
+{
+    int min_table_size = 21, difference = 1, before_size;
+    Hash_table example(min_table_size);
+    string a, a_def, deleting;
+    a = "Multiplication";
+    a_def = "Multiply means to add equal groups. When we multiply, the number of things in the group increases";
+    example.push(a, a_def);
+    a = "Square";
+    a_def = "Result of multiplying a number by itself";
+    example.push(a, a_def);
+    before_size = example.Get_curr_amount();
+    deleting = "Square";
+    example.delete_with_key(deleting);
+    if (before_size - example.Get_curr_amount() == difference) {
+        cout << "Test4 correct!" << endl;
+        return true;
+    }
+    else {
+        cout << "Test4 incorrect!" << endl;
+        return false;
+    }
+}
+bool Test5()
+{
+    int min_table_size = 21;
+    Hash_table example(min_table_size);
+    string a, a_def;
+    a = "M5ltiplication";
+    a_def = "Multiply means to add equal groups. When we multiply, the number of things in the group increases";
+    example.push(a, a_def);
+    if (example.Get_curr_amount() == 0) {
+        cout << "Test5 correct!" << endl;
+        return true;
+    }
+    else {
+        cout << "Test5 incorrect!" << endl;
+        return false;
+    }
+}
+bool Test6()
+{
+    int min_table_size = 21;
+    Hash_table example(min_table_size);
+    string a, a_def;
+    a = "7";
+    a_def = "Multiply means to add equal groups. When we multiply, the number of things in the group increases";
+    example.push(a, a_def);
+    if (example.Get_curr_amount() == 0) {
+        cout << "Test6 correct!" << endl;
+        return true;
+    }
+    else {
+        cout << "Test6 incorrect!" << endl;
+        return false;
+    }
+}
+bool Test7()
+{
+    int min_table_size = 21;
+    Hash_table example(min_table_size);
+    string a, a_def;
+    a = "math";
+    a_def = "Multiply means to add equal groups. When we multiply, the number of things in the group increases";
+    example.push(a, a_def);
+    a = "math";
+    a_def = "Multiply means to add equal groups. When we multiply, the number of things in the group increases";
+    example.push(a, a_def);
+    if (example.Get_curr_amount() == 1) {
+        cout << "Test7 correct!" << endl;
+        return true;
+    }
+    else {
+        cout << "Test7 incorrect!" << endl;
+        return false;
+    }
+}
+bool Test8()
+{
+    int min_table_size = 21;
+    Hash_table example(min_table_size);
+    string a, a_def;
+    a = "Radius";
+    a_def = "Distance from the center outwards";
+    example.push(a, a_def);
+    a = "Radius";
+    a_def = "Distance from the center outwards";
+    example.push(a, a_def);
+    if (example.Get_curr_amount() == 1) {
+        cout << "Test8 correct!" << endl;
+        return true;
+    }
+    else {
+        cout << "Test8 incorrect!" << endl;
+        return false;
+    }
+}
+void tests()
+{
+    int correct_amount = 0;
+    cout << "Deleting tests" << endl;
+    correct_amount += Test1();
+    correct_amount += Test2();
+    correct_amount += Test3();
+    correct_amount += Test4();
+    cout << "Denial tests (deny means correct!!!!)" << endl;
+    correct_amount += Test5();
+    correct_amount += Test6();
+    correct_amount += Test7();
+    correct_amount += Test8();
+    if (correct_amount == 8) cout << "All tests passed correctly!" << endl;
+}
+void our_own_input()
+{
+    int choice;
+    cout << "1)Tests :: 2)Task" << endl;
+    cin >> choice;
+    switch (choice)
+    {
+    case 1: tests();
+        break;
+    case 2: task();
+        break;
+    default: cout << "Enter something possible to work with!" << endl;
+        return;
+    }
 }

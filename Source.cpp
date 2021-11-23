@@ -2,6 +2,6 @@
 
 int main()
 {
-    task();
+    our_own_input();
     return 0;
 }
