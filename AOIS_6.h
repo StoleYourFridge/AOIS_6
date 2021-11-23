@@ -11,6 +11,10 @@ class Table_Note
 {
     int numeral_key_word;
     int hash;
+    bool collision;
+    bool U;
+    bool T;
+    bool D;
     string key_word;
     string data;
     Table_Note* next;

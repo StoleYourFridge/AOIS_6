@@ -2,11 +2,15 @@
 
 void Table_Note::print()
 {
-    cout << "----------------------------------" << endl;
-    cout << "Numeral Key word : " << numeral_key_word << endl;
-    cout << "Hash : " << hash << endl;
-    cout << "Key word : " << key_word << endl;
-    cout << "Data : " << data << endl << "----------------------------------" << endl;
+    cout << "------------------------------------------------------------------------------------------------------------------" << endl;
+    cout << "Key word : " << key_word <<
+        " | Hash : " << hash <<
+        " | Numerical key word : " << numeral_key_word <<
+        " | C : " << collision <<
+        " | D : " << D <<
+        " | U : " << U <<
+        " | T : " << T <<
+        endl << "Data : " << data << endl << "------------------------------------------------------------------------------------------------------------------" << endl;
 }
 Hash_table::Hash_table(int table_size) : table(table_size, NULL), table_size(table_size), current_notes_amount(0) {}
 bool Hash_table::encode_checker(string& key_word)
@@ -43,6 +47,9 @@ void Hash_table::push(string& key_word, string& data)
     Note->data = data;
     Note->numeral_key_word = numeral_key_word(key_word);
     Note->hash = hash_function(Note->numeral_key_word);
+    Note->D = false;
+    Note->U = true;
+    Note->T = true;
     Note->next = NULL;
     Table_Note* example = table[Note->hash], *previous = NULL;
     while (example != NULL)
@@ -57,9 +64,13 @@ void Hash_table::push(string& key_word, string& data)
     }
     if (previous == NULL) {
         table[Note->hash] = Note;
+        Note->collision = false;
     }
     else {
         previous->next = Note;
+        previous->T = false;
+        previous->collision = true;
+        Note->collision = true;
     }
     current_notes_amount++;
 }
@@ -68,15 +79,24 @@ void Hash_table::delete_with_key(string& key_word)
     if (!encode_checker(key_word)) return;
     int hash_we_try_to_delete = hash_function(numeral_key_word(key_word));
     Table_Note* deleting = table[hash_we_try_to_delete], *previous = NULL;
+    int collision_counter = 0, min_collision_amount = 2;
     while (deleting != NULL)
     {
+        collision_counter++;
         if (deleting->key_word == key_word && previous == NULL){
+            if (deleting->collision && deleting->next->next == NULL) {
+                deleting->next->collision = false;
+            }
             table[hash_we_try_to_delete] = deleting->next;
             delete deleting;
             deleting = table[hash_we_try_to_delete];
             current_notes_amount--;
         }
         else if (deleting->key_word == key_word && previous != NULL) {
+            if (deleting->next == NULL) {
+                previous->T = true;
+                if (collision_counter == min_collision_amount) previous->collision = false;
+            }
             previous->next = deleting->next;
             delete deleting;
             deleting = previous->next;
@@ -91,8 +111,8 @@ void Hash_table::delete_with_key(string& key_word)
 void Hash_table::find_with_key(string& key_word)
 {
     if (!encode_checker(key_word)) return;
-    int hash_we_try_to_delete = hash_function(numeral_key_word(key_word));
-    Table_Note* looking_for = table[hash_we_try_to_delete];
+    int hash_we_try_to_find = hash_function(numeral_key_word(key_word));
+    Table_Note* looking_for = table[hash_we_try_to_find];
     while (looking_for != NULL)
     {
         if (looking_for->key_word == key_word) looking_for->print();
